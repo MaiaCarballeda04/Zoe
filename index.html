@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Feliz Cumple 23!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366 0%, #0099e6 50%, #002244 100%);
+      min-height: 100vh;
+      color: #ffffff;
+    }
+    .font-serif-custom {
+      font-family: 'Playfair Display', serif;
+    }
+    /* Estilos Velas Numéricas 23 */
+    .candle-number {
+      font-size: 7rem;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+      position: relative;
+      display: inline-block;
+      user-select: none;
+    }
+    .flame {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 36px;
+      background: radial-gradient(ellipse at bottom, #ffea00 0%, #ff5722 60%, transparent 100%);
+      border-radius: 50% 50% 20% 20%;
+      box-shadow: 0 0 20px #ffea00, 0 0 35px #ff5722;
+      animation: flicker 0.8s infinite alternate ease-in-out;
+      cursor: pointer;
+      transition: opacity 0.5s ease;
+    }
+    .flame.off {
+      opacity: 0;
+      box-shadow: none;
+      pointer-events: none;
+    }
+    .smoke {
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 20px;
+      background: rgba(200, 200, 200, 0.6);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .smoke.active {
+      animation: smokeRise 1.5s forwards ease-out;
+    }
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+      50% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
+      100% { transform: translateX(-50%) scale(0.95) rotate(-1deg); }
+    }
+    @keyframes smokeRise {
+      0% { opacity: 0.8; transform: translateX(-50%) translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(3); }
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center justify-center">
+
+  <!-- Encabezado -->
+  <header class="text-center my-6 max-w-2xl">
+    <span class="bg-sky-400/20 text-sky-200 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-sky-400/40">Official 23rd Birthday Edition (Belgrano's Version)</span>
+    <h1 class="text-4xl md:text-6xl font-extrabold mt-3 text-white drop-shadow-md">¡Feliz Cumpleaños #23! 🩵</h1>
+    <p class="text-sky-100 text-base md:text-lg mt-2">Un recorrido por el celeste de Alberdi, Taylor Swift, la psicología y un buen cuartetazo.</p>
+  </header>
+
+  <!-- Sección Torta con Velas "23" -->
+  <section class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 md:p-10 w-full max-w-lg text-center shadow-2xl my-4">
+    <h2 class="text-2xl font-bold mb-2">¡Sopla o haz clic en las velas! 🎂</h2>
+    <p class="text-sm text-sky-200 mb-6" id="instructions">Haz clic en el fuego o activa el micrófono para soplar las velas.</p>
+
+    <!-- Torta e Integración de Números -->
+    <div class="relative mx-auto my-8 w-64 flex flex-col items-center justify-center">
+      
+      <!-- Contenedor Velas Numéricas -->
+      <div class="flex justify-center gap-6 mb-[-15px] z-20">
+        <!-- Vela Número 2 -->
+        <div class="relative cursor-pointer group" onclick="extinguishCandle(1)">
+          <div id="flame-1" class="flame"></div>
+          <div id="smoke-1" class="smoke"></div>
+          <span class="candle-number">2</span>
+        </div>
+        <!-- Vela Número 3 -->
+        <div class="relative cursor-pointer group" onclick="extinguishCandle(2)">
+          <div id="flame-2" class="flame"></div>
+          <div id="smoke-2" class="smoke"></div>
+          <span class="candle-number">3</span>
+        </div>
+      </div>
+
+      <!-- Torta (Gráfica CSS/Tailwind) -->
+      <div class="w-full bg-white text-slate-800 rounded-t-3xl pt-4 pb-2 border-b-8 border-sky-400 shadow-md relative z-10">
+        <p class="font-extrabold text-sm tracking-wider text-sky-600">★ CAB ★</p>
+      </div>
+      <div class="w-full bg-sky-500 text-white font-bold py-3 border-b-8 border-sky-700 shadow-lg relative z-10">
+        <p class="text-xs uppercase tracking-widest"></p>
+      </div>
+      <div class="w-full bg-yellow-400 h-4 rounded-b-xl shadow-xl"></div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+      <button id="blow-btn" onclick="extinguishAll()" class="bg-sky-500 hover:bg-sky-400 text-white font-bold py-2 px-6 rounded-full transition shadow-lg text-sm">
+        💨 Soplar Velitas
+      </button>
+      <button id="mic-btn" onclick="initMic()" class="bg-white/20 hover:bg-white/30 text-white border border-white/40 font-bold py-2 px-6 rounded-full transition shadow-lg text-sm">
+        🎙️ Usar Micrófono
+      </button>
+    </div>
+  </section>
+
+  <!-- Carta Emotiva -->
+  <section class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 md:p-8 w-full max-w-2xl my-6 shadow-xl">
+    <h3 class="text-2xl font-bold font-serif-custom text-sky-200 mb-4 text-center">Para mi bestie 🩵</h3>
+    <div class="space-y-4 text-sky-50 leading-relaxed text-sm md:text-base">
+      <p>
+        ¡Felices 23 años zoé! Aunque nos separe la distancia y vivamos en provincias distintas, sabes que el cariño atraviesa cualquier mapa
+      </p>
+      <p>
+        Espero que hoy celebres a lo grande, escuchando un buen cuarteto de fondo o cantando las letras de taylor swift y sintiendo el orgullo celeste bien arriba cual me termista contangiendo esa alegria celeste, te mando muchos animos en el camino que estás construyendo en psicología, tu empatía y tu forma de ser van a impactar la vida de muchísimas personas
+      </p>
+      <p class="font-semibold text-white">
+        ¡Que los 23 vengan con muchos éxitos, alegrías, temazos de taylor y alegrías piratas! Te quiero un montón amiga
+      </p>
+    </div>
+  </section>
+
+  <!-- Tarjetas Interactivas de Gustos -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl my-6">
+    <div class="bg-white/10 p-5 rounded-2xl border border-white/10 text-center hover:scale-105 transition">
+      <div class="text-3xl mb-2">🏴‍☠️</div>
+      <h4 class="font-bold text-sky-200">Hincha Celeste</h4>
+      <p class="text-xs text-sky-100 mt-1">El amor por la camiseta de Belgrano no conoce de distancias.</p>
+    </div>
+    <div class="bg-white/10 p-5 rounded-2xl border border-white/10 text-center hover:scale-105 transition">
+      <div class="text-3xl mb-2">💃</div>
+      <h4 class="font-bold text-sky-200">Alma de Cuarteto</h4>
+      <p class="text-xs text-sky-100 mt-1">El ritmo cordobés para festejar como corresponde los 23</p>
+    </div>
+    <div class="bg-white/10 p-5 rounded-2xl border border-white/10 text-center hover:scale-105 transition">
+      <div class="text-3xl mb-2">✨</div>
+      <h4 class="font-bold text-sky-200">Swiftie Era (23)</h4>
+      <p class="text-xs text-sky-100 mt-1">"I don't know about you, but I'm feeling 22..." ¡Bueno, ahora 23!</p>
+    </div>
+    <div class="bg-white/10 p-5 rounded-2xl border border-white/10 text-center hover:scale-105 transition">
+      <div class="text-3xl mb-2">🧠</div>
+      <h4 class="font-bold text-sky-200">Futura Psicóloga</h4>
+      <p class="text-xs text-sky-100 mt-1">Comprendiendo la mente y dejando huella</p>
+    </div>
+  </section>
+
+  <!-- Lógica en JS -->
+  <script>
+    let activeFlames = 2;
+
+    function extinguishCandle(id) {
+      const flame = document.getElementById(`flame-${id}`);
+      const smoke = document.getElementById(`smoke-${id}`);
+      if (flame && !flame.classList.contains('off')) {
+        flame.classList.add('off');
+        smoke.classList.add('active');
+        activeFlames--;
+        checkCompletion();
+      }
+    }
+
+    function extinguishAll() {
+      extinguishCandle(1);
+      extinguishCandle(2);
+    }
+
+    function checkCompletion() {
+      if (activeFlames === 0) {
+        document.getElementById('instructions').innerText = "¡Deseo pedido con éxito felices 23 bella!";
+        triggerConfetti();
+      }
+    }
+
+    function triggerConfetti() {
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#0099e6', '#ffffff', '#ffd700']
+      });
+    }
+
+    // Detección por Micrófono (Soplo)
+    async function initMic() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const microphone = audioContext.createMediaStreamSource(stream);
+        microphone.connect(analyser);
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        document.getElementById('mic-btn').innerText = "🎙️ Escuchando...";
+
+        function detectBlow() {
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < bufferLength; i++) {
+            sum += dataArray[i];
+          }
+          let average = sum / bufferLength;
+
+          if (average > 50) { // Umbral de soplo
+            extinguishAll();
+          } else if (activeFlames > 0) {
+            requestAnimationFrame(detectBlow);
+          }
+        }
+        detectBlow();
+      } catch (err) {
+        alert("No se pudo acceder al micrófono utiliza el botón para apagar las velas!");
+      }
+    }
+  </script>
+</body>
+</html>
